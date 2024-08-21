@@ -28,6 +28,7 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
     private int lastTs = 0;
     private string lastAnswer=" ";
     private string nowAnswer;
+    private string lastAsk=" ";
     private bool isLLMIdle = true;
 
     void Start()
@@ -69,9 +70,9 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
             string url = danmakuApiUrl + roomID + "&room_type=0";
             UnityWebRequest request = UnityWebRequest.Get(url);
             //SetDanmakuHeaders(request);
-
+            Debug.LogError("wait ans");
             yield return request.SendWebRequest();
-
+            Debug.LogError("get ans");
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject jsonResponse = JObject.Parse(request.downloadHandler.text);
@@ -83,15 +84,28 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
                 Debug.LogError("Error fetching danmaku: " + request.error);
             }
             nowAnswer = aiInterface.GetAnswer();
-            Debug.LogError((lastAnswer != nowAnswer).ToString());
-            if (lastAnswer!=nowAnswer)
+            Debug.LogError("Ans:" + nowAnswer);
+            Debug.LogError("ifAns:"+(lastAnswer != nowAnswer).ToString());
+            Debug.LogError("askinfo:"+aiInterface.GetChosenText());
+            if (lastAnswer!=nowAnswer&&nowAnswer!=null)
             {
                 Ask.text = aiInterface.GetChosenText();
                 Ans.text = RemoveBrackets(nowAnswer);
                 AnsWithEmoji.text = nowAnswer;
                 lastAnswer = nowAnswer;
+                lastAsk = aiInterface.GetChosenText();
                 isLLMIdle = true;
+                aiInterface.SetIdle();
+                //aiInterface.SetPrompt("null");
             }
+            /*else
+            {
+                if(lastAsk == aiInterface.GetChosenText())
+                {
+                    isLLMIdle=true;
+                }
+            }*/
+
             yield return new WaitForSeconds(UpdateIntervalTime); // 每2秒获取一次弹幕
         }
     }
@@ -141,12 +155,17 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
                 tmpData.guard_level = guardLevel;
                 danmakuScroller.AddDanmaku(tmpData);
                 //LLM部分
-                if(isLLMIdle)
+                Debug.LogError("isllmIDLE:" + isLLMIdle.ToString()+" Text: "+text);
+                if (isLLMIdle)
                 {
+                    Debug.LogError("Ask:" + text);
                     aiInterface.SetPrompt(text);
+                    Debug.LogError("setaskinfo:" + aiInterface.GetChosenText());
+                    aiInterface.SetTsID(ts);
                     Debug.LogError(text);
-                    lastAnswer = nowAnswer;
+                    //lastAnswer = nowAnswer;
                     isLLMIdle = false;
+                    
                 }
             }
         }

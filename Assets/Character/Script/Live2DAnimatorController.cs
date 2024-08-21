@@ -9,7 +9,7 @@ public class Live2DAnimatorController : MonoBehaviour
     public float randomAnimationInterval = 5f; // 随机动画播放间隔时间
     private void Start()
     {
-        //animator.Play("hiyori_m01");
+        
         // 播放空闲动画
         PlayIdleAnimation();
 
@@ -17,8 +17,7 @@ public class Live2DAnimatorController : MonoBehaviour
         StartCoroutine(PlayRandomAnimations());
 
         // 为输入框的提交事件添加监听器
-        inputField.onValueChanged.AddListener(OnEndEdit);
-
+        //inputField.onEndEdit.AddListener(OnEndEdit);
     }
 
     // 播放空闲动画
@@ -28,23 +27,65 @@ public class Live2DAnimatorController : MonoBehaviour
     }
 
     // 播放微笑动画
-    public void PlaySmileAnimation()
+    public void PlayAngerAnimation()
     {
         
-        animator.Play("hiyori_m05"); // 微笑动画的状态名称
+        animator.Play("Anger"); // Anger动画的状态名称
     }
 
     // 播放疑惑动画
-    public void PlayDoubtAnimation()
+    public void PlayAstonishAnimation()
     {
         
-        animator.Play("hiyori_m07"); // 疑惑动画的状态名称
+        animator.Play("Astonish"); // Astonish动画的状态名称
+    }
+
+    public void PlayMadAnimation()
+    {
+
+        animator.Play("Mad"); // Mad动画的状态名称
+    }
+
+    public void PlayNodAnimation()
+    {
+
+        animator.Play("Nod Head"); // Nod Head动画的状态名称
+    }
+
+    public void PlaySadAnimation()
+    {
+
+        animator.Play("Sad"); // Sad动画的状态名称
+    }
+
+    public void PlayShakeAnimation()
+    {
+
+        animator.Play("Shake Head"); // Shake Head动画的状态名称
+    }
+
+    public void PlayShyAnimation()
+    {
+
+        animator.Play("Shy"); // Shy动画的状态名称
+    }
+
+    public void PlaySmileAnimation()
+    {
+
+        animator.Play("Smile"); // Smile动画的状态名称
+    }
+
+    public void PlaySurpriseAnimation()
+    {
+
+        animator.Play("Surprise"); // Surprise动画的状态名称
     }
 
     // 随机播放动画
     private IEnumerator PlayRandomAnimations()
     {
-        string[] randomAnimations = { "hiyori_m01", "hiyori_m02", "hiyori_m03" }; // 随机动画的状态名称
+        string[] randomAnimations = { "Idle1", "Idle2", "Idle3" }; // 随机动画的状态名称
 
         while (true)
         {
@@ -78,19 +119,48 @@ public class Live2DAnimatorController : MonoBehaviour
     }
 
     // 当输入框文本提交时调用
-    public void OnEndEdit(string inputText)
+    public void OnEndEdit()
     {
         // 打印输入的文本（或进行其他处理）
+        string inputText = inputField.text;
         Debug.LogError("Input Field Text: " + inputText);
 
         // 根据输入文本触发相应的动画
-        if (inputText.Contains("(smile)"))
+        if (inputText.Contains("(anger)"))
+        {
+            PlayAngerAnimation();
+        }
+        else if (inputText.Contains("(astonish)"))
+        {
+            PlayAstonishAnimation();
+        }
+        else if (inputText.Contains("(mad)"))
+        {
+            PlayMadAnimation();
+        }
+        else if (inputText.Contains("(nod)"))
+        {
+            PlayNodAnimation();
+        }
+        else if (inputText.Contains("(sad)"))
+        {
+            PlaySadAnimation();
+        }
+        else if (inputText.Contains("(shake)"))
+        {
+            PlayShakeAnimation();
+        }
+        else if (inputText.Contains("(shy)"))
+        {
+            PlayShyAnimation();
+        }
+        else if (inputText.Contains("(smile)"))
         {
             PlaySmileAnimation();
         }
-        else if (inputText.Contains("(doubt)"))
+        else if (inputText.Contains("(surprise)"))
         {
-            PlayDoubtAnimation();
+            PlaySurpriseAnimation();
         }
 
         // 清空输入框内容（如果需要）

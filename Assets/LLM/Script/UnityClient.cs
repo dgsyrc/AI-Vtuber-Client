@@ -1,6 +1,8 @@
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class UnityClient : MonoBehaviour
 {
@@ -10,10 +12,10 @@ public class UnityClient : MonoBehaviour
         public string aiAnswer;
     }
 
-    public string prompt;
+    public string prom;
     public string serverIP = "127.0.0.1";
     public int serverPort = 25001;
-    private string logPath;
+    private bool Idle = true;
     private AIInfo MyAIInfo = new AIInfo
     {
         Prompt = "up好可爱",
@@ -21,14 +23,14 @@ public class UnityClient : MonoBehaviour
 
     private TcpClient client;
     private NetworkStream stream;
-    private string realSendPrompt;
-    private string lastString;
+    private int tsID=0;
+    private int lastTsID=0;
 
     void Start()
     {
-        logPath = Application.persistentDataPath + "/LLM_log.json";
         ConnectToServer();
-        InvokeRepeating("SendTimedMessage", 10f, 12f);  // 每20秒调用一次SendTimedMessage
+        //InvokeRepeating("SendTimedMessage", 10f, 20f);  // 每20秒调用一次SendTimedMessage
+        StartCoroutine(SendTimedMessage());
     }
 
     void ConnectToServer()
@@ -43,22 +45,27 @@ public class UnityClient : MonoBehaviour
         ReceiveMessage();
     }
 
-    void SendTimedMessage()
+    private IEnumerator SendTimedMessage()
     {
-        if(MyAIInfo.Prompt != lastString)
+        while (true)
         {
-            lastString = MyAIInfo.Prompt;
-            realSendPrompt = MyAIInfo.Prompt;
-            SendMessage(MyAIInfo);
+            if (Idle && tsID != lastTsID)
+            {
+                lastTsID = tsID;
+                SendMessage(MyAIInfo);
+            }
+            yield return new WaitForSeconds(4f);
         }
-        
+       
     }
 
     void SendMessage(AIInfo aiInfo)
     {
+        Idle = false;
         string json = JsonUtility.ToJson(aiInfo);
         byte[] data = Encoding.UTF8.GetBytes(json);
         stream.Write(data, 0, data.Length);
+        
     }
 
     void ReceiveMessage()
@@ -74,11 +81,11 @@ public class UnityClient : MonoBehaviour
 
     public void DecodeJSON(string json)
     {
-        System.IO.File.WriteAllText(logPath, json);
         AIInfo aiInfo = JsonUtility.FromJson<AIInfo>(json);
-        MyAIInfo.Prompt = (prompt=="") ? MyAIInfo.Prompt : prompt;
+        MyAIInfo.Prompt = (prom == "") ? MyAIInfo.Prompt : prom;
         MyAIInfo.aiAnswer = aiInfo.aiAnswer;
         Debug.Log("Prompt：" + aiInfo.Prompt + "，AI Answer：" + aiInfo.aiAnswer);
+        //Idle = true;
     }
 
     // 新增类，用于外部调用
@@ -89,16 +96,13 @@ public class UnityClient : MonoBehaviour
         public AIInterface(UnityClient instance)
         {
             clientInstance = instance;
-            Debug.LogError(instance == null ? "myinstance is null" : "myinstance is not null");
         }
 
         // 外部调用此方法设置Prompt
         public void SetPrompt(string prompt)
         {
-            Debug.LogError("Cli" + prompt);
-            Debug.LogError(clientInstance == null ? "myObject is null" : "myObject is not null");
-            clientInstance.prompt = prompt;
-            Debug.LogError("CliL" + prompt);
+            clientInstance.MyAIInfo.Prompt = prompt;
+            clientInstance.prom = prompt;
         }
 
         // 外部调用此方法获取AI的回答
@@ -107,9 +111,18 @@ public class UnityClient : MonoBehaviour
             return clientInstance.MyAIInfo.aiAnswer;
         }
 
+        public void SetIdle()
+        {
+            clientInstance.Idle = true;
+        }
+
         public string GetChosenText()
         {
-            return clientInstance.realSendPrompt;
+            return clientInstance.MyAIInfo.Prompt;
+        }
+        public void SetTsID(int tsID)
+        {
+            clientInstance.tsID = tsID;
         }
     }
 

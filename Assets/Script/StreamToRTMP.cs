@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,17 +11,25 @@ public class StreamToRTMP : MonoBehaviour
 {
     public Camera cameraToStream; // Assign the camera to stream in the inspector
     public RenderTexture renderTexture; // Assign a RenderTexture in the inspector
-    public string rtmpUrl = "rtmp://live-push.bilivideo.com/live-bvc?streamname=live_179225431_2633288&key=844565e01ec65e1390fbf45ecc7c746e&schedule=rtmp&pflag=1"; // RTMP URL
+    public string rtmpUrl = "rtmp://live-push.bilivideo.com/live-bvc?streamname="; // RTMP URL
     public int width = 1920;
     public int height = 1080;
+    public TMP_InputField inputRMTPLink;
+    private bool coroutineCheck = false;
+    private bool coroutineEndCheck = false;
     private Process ffmpegProcess;
+    private float startTime;
     void Start()
     {
         renderTexture = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32);
         renderTexture.Create();
-        cameraToStream.targetTexture = renderTexture;
+        //cameraToStream.targetTexture = renderTexture;
+        //cameraToStream.targetTexture = renderTexture;
         //cameraToStream.targetDisplay = 0; // …Ë÷√Œ™ Display 1
-        StartStreaming();
+        if(coroutineCheck)
+        {
+            StartStreaming();
+        }
     }
 
     void OnApplicationQuit()
@@ -30,14 +39,14 @@ public class StreamToRTMP : MonoBehaviour
 
     public void StartStreaming()
     {
-        if (cameraToStream == null || renderTexture == null)
+        if (cameraToStream == null)
         {
-            UnityEngine.Debug.LogError("Camera or RenderTexture not assigned.");
+            UnityEngine.Debug.LogError("Camera not assigned.");
             return;
         }
 
         // Ensure RenderTexture is set up for the camera
-        cameraToStream.targetTexture = renderTexture;
+        //cameraToStream.targetTexture = renderTexture;
 
         // Path to ffmpeg executable
         string ffmpegPath = UnityEngine.Application.streamingAssetsPath + "/ffmpeg.exe";
@@ -76,7 +85,6 @@ public class StreamToRTMP : MonoBehaviour
             ffmpegProcess.WaitForExit();
             ffmpegProcess.Close();
             ffmpegProcess = null;
-            cameraToStream.targetTexture = null;
         }
     }
 
@@ -85,14 +93,19 @@ public class StreamToRTMP : MonoBehaviour
         // Create a temporary texture to read from RenderTexture
         Texture2D tempTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
 
-        while (true)
+        while (coroutineCheck)
         {
             // Capture the current frame
+            RenderTexture previousRenderTexture = cameraToStream.targetTexture;
+            SetCullingMask("character");
             cameraToStream.targetTexture = renderTexture;
             RenderTexture.active = renderTexture;
+            cameraToStream.Render();
             tempTexture.ReadPixels(new Rect(0, 0, width,height), 0, 0);
-            RenderTexture.active = null;
-
+            //RenderTexture.active = null;
+            SetCullingMask("Everything");
+            cameraToStream.targetTexture = previousRenderTexture;
+            cameraToStream.Render();
             // Get the raw data from the texture
             byte[] bytes = tempTexture.GetRawTextureData(); // Use GetRawTextureData() for raw RGBA data
 
@@ -111,6 +124,35 @@ public class StreamToRTMP : MonoBehaviour
             // Yield to wait for the next frame
             yield return new WaitForSeconds(1f / 30f); // Assuming 30 FPS
         }
+        coroutineEndCheck = true;
         //cameraToStream.targetTexture = null;
+    }
+    void SetCullingMask(string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        if (layerName == "Everything")
+        {
+            cameraToStream.cullingMask = -1;       
+        }
+        else
+        {
+            // …Ë÷√Ãﬁ≥˝’⁄’÷
+            cameraToStream.cullingMask = 1 << layer;
+        }
+        return;
+    }
+
+    public void changeRMTPLink()
+    {
+        coroutineCheck = false;
+        /*while (!coroutineEndCheck)
+        {
+            coroutineCheck = false;
+        }*/
+        coroutineCheck = false;
+        StopCoroutine("CaptureAndStream");
+        rtmpUrl = inputRMTPLink.text;
+        coroutineCheck = true;
+        StartStreaming();
     }
 }
