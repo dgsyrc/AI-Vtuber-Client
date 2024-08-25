@@ -72,9 +72,10 @@ public class UnityClient : MonoBehaviour
     {
         if (stream.DataAvailable)
         {
-            byte[] responseData = new byte[1024];
+            byte[] responseData = new byte[4096];
             int bytesRead = stream.Read(responseData, 0, responseData.Length);
             string response = Encoding.UTF8.GetString(responseData, 0, bytesRead);
+            System.IO.File.WriteAllText(Application.persistentDataPath + "/LLM_message.json", response);
             DecodeJSON(response);
         }
     }

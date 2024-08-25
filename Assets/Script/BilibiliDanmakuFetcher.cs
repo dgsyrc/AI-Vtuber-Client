@@ -8,6 +8,7 @@ using System.IO;
 using TMPro;
 using System.Text.RegularExpressions;
 using static UnityClient;
+using System.Text;
 
 
 public class BilibiliDanmakuFetcher : MonoBehaviour
@@ -90,11 +91,11 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
             if (lastAnswer!=nowAnswer&&nowAnswer!=null)
             {
                 Ask.text = aiInterface.GetChosenText();
-                Ans.text = RemoveBrackets(nowAnswer);
-                AnsWithEmoji.text = nowAnswer;
+                Ans.text = RemoveBrackets(ConvertPunctuationAndRemoveEmoji(nowAnswer));
+                AnsWithEmoji.text = ConvertPunctuationAndRemoveEmoji(nowAnswer);
                 lastAnswer = nowAnswer;
                 lastAsk = aiInterface.GetChosenText();
-                isLLMIdle = true;
+                //isLLMIdle = true;
                 aiInterface.SetIdle();
                 //aiInterface.SetPrompt("null");
             }
@@ -190,5 +191,40 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
     public static string RemoveBrackets(string input)
     {
         return Regex.Replace(input, @"\s*(\(.*?\))\s*", "", RegexOptions.Singleline);
+    }
+    private string ConvertPunctuationAndRemoveEmoji(string input)
+    {
+        // 1. 替换中文标点符号为英文标点符号
+        StringBuilder sb = new StringBuilder(input);
+        sb.Replace('，', ',')
+          .Replace('。', '.')
+          .Replace('！', '!')
+          .Replace('？', '?')
+          .Replace('：', ':')
+          .Replace('；', ';')
+          .Replace('（', '(')
+          .Replace('）', ')')
+          .Replace('【', '[')
+          .Replace('】', ']')
+          .Replace('“', '"')
+          .Replace('”', '"')
+          .Replace('‘', '\'')
+          .Replace('’', '\'');
+
+        // 2. 使用正则表达式删除所有 emoji 符号
+        string noEmojiString = RemoveEmoji(sb.ToString());
+
+        return noEmojiString;
+    }
+
+    string RemoveEmoji(string input)
+    {
+        // 正则表达式匹配 emoji 符号
+        string emojiPattern = @"[\u2000-\u3300\uD83C-\uDBFF\uDC00-\uDFFF]+";
+        return Regex.Replace(input, emojiPattern, "");
+    }
+    public void SetIDLE()
+    {
+        isLLMIdle = true;
     }
 }

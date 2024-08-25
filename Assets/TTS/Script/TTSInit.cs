@@ -18,7 +18,7 @@ public class TTSInit : MonoBehaviour
         try
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            string projectPath = Directory.GetCurrentDirectory();//获取当前Unity工作目录
+            string projectPath = null;//获取当前Unity工作目录
             batchFilePath = projectPath + batchFilePath;
             startInfo.FileName = batchFilePath;
             startInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(batchFilePath); // 设置工作目录

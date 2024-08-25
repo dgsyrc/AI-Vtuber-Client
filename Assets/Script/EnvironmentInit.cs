@@ -46,5 +46,14 @@ public class EnvironmentInit : MonoBehaviour
             exeProcess.Dispose();
         }
     }
-    
+
+    private void OnDestroy()
+    {
+        if (exeProcess != null && !exeProcess.HasExited)
+        {
+            exeProcess.Kill(); // ½áÊø½ø³Ì
+            exeProcess.Dispose();
+        }
+    }
+
 }

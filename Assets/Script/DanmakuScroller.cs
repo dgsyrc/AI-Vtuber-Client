@@ -87,6 +87,7 @@ public class DanmakuScroller : MonoBehaviour
                 {
                     newDanmaku = Instantiate(danmakuNoBadgePrefab, contentParent);
                     textComponent = newDanmaku.GetComponentInChildren<TMP_Text>();
+                    UnityEngine.Debug.LogError("Init");
                 }
                 else 
                 {
@@ -112,9 +113,9 @@ public class DanmakuScroller : MonoBehaviour
                 
                 
                 textComponent.text = newData.name+": "+newData.text;
-                
-               
 
+
+                UnityEngine.Debug.LogError("text:"+textComponent.text);
                 // 自动滚动到最底部
                 /*Canvas.ForceUpdateCanvases();
                 scrollRect.verticalNormalizedPosition = 0f;

@@ -14,13 +14,14 @@ public class BackgroundImageManager : MonoBehaviour
     public Image backgroundImage; // 背景图组件
     public string savePath; // 保存路径
     public BackgroundModeSetter backgroundModeSetter; // 背景模式设置器
+    public ImageManager imageManager;
 
     private Sprite loadedSprite;
 
     void Start()
     {
         // 设置下拉菜单的选项
-        savePath = Path.Combine(Application.persistentDataPath, "BackgroundSettings.json");
+        //savePath = Path.Combine(Application.persistentDataPath, "BackgroundSettings.json");
         modeDropdown.ClearOptions();
         modeDropdown.AddOptions(new List<string> { "平铺", "填充" });
 
@@ -55,6 +56,8 @@ public class BackgroundImageManager : MonoBehaviour
             texture.LoadImage(fileData);
             loadedSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             backgroundModeSetter.SetBackgroundImage(loadedSprite);
+            imageManager.nowBackgroundData.path = path;
+            ApplyBackgroundImage();
             //backgroundImage.sprite = loadedSprite;
             //backgroundImage.color = Color.white;
         }
@@ -64,15 +67,12 @@ public class BackgroundImageManager : MonoBehaviour
         }
     }
 
-    void ApplyBackgroundImage()
+    public void ApplyBackgroundImage()
     {
         // 应用显示模式
         //ApplyDisplayMode((BackgroundImageMode)modeDropdown.value);
-        BackgroundModeSetter.BackgroundImageMode mode = (BackgroundModeSetter.BackgroundImageMode)modeDropdown.value;
-        backgroundModeSetter.ApplyDisplayMode(mode);
-
-        // 保存设置
-        SaveSettings();
+        imageManager.nowBackgroundData.mode = modeDropdown.value;
+        backgroundModeSetter.ApplyDisplayMode(modeDropdown.value);
     }
 
     /*void ApplyDisplayMode(BackgroundImageMode mode)
@@ -95,29 +95,17 @@ public class BackgroundImageManager : MonoBehaviour
                 break;
         }
     }*/
-
-    void SaveSettings()
+    public void LoadSettings()
     {
-        BackgroundSettings settings = new BackgroundSettings
+        if (File.Exists(imageManager.nowBackgroundData.path))
         {
-            imagePath = filePathText.text,
-            mode = (BackgroundImageMode)modeDropdown.value
-        };
-        string json = JsonUtility.ToJson(settings);
-        File.WriteAllText(savePath, json);
-    }
-
-    void LoadSettings()
-    {
-        if (File.Exists(savePath))
-        {
-            string json = File.ReadAllText(savePath);
-            BackgroundSettings settings = JsonUtility.FromJson<BackgroundSettings>(json);
-            filePathText.text = settings.imagePath;
-            modeDropdown.value = (int)settings.mode;
-            LoadImage(settings.imagePath); // 加载图片
+            //string json = File.ReadAllText(imageManager.nowBackgroundData.path);
+            //BackgroundSettings settings = JsonUtility.FromJson<BackgroundSettings>(json);
+            filePathText.text = imageManager.nowBackgroundData.path;
+            modeDropdown.value = imageManager.nowBackgroundData.mode;
+            LoadImage(imageManager.nowBackgroundData.path); // 加载图片
             //ApplyDisplayMode(settings.mode); // 应用显示模式
-            ApplyBackgroundImage();
+            //ApplyBackgroundImage();
         }
     }
 
