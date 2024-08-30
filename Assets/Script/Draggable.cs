@@ -1,3 +1,7 @@
+/* Module name: Draggable
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,8 +22,6 @@ public class Draggable : MonoBehaviour, IDragHandler
     private Vector3 initialSize;
     private float initialAspectRatio;
 
-
-    //private CanvasGroup canvasGroup;
 
     void Start()
     {
@@ -44,9 +46,7 @@ public class Draggable : MonoBehaviour, IDragHandler
                 buttonState = 2;
                 break;
         }
-        //lockButtonText.text = (buttonState == 0) ? "Unlock" : (buttonState == 1) ? "Resize" : "Lock";
         buttonImage = editButton.GetComponent<Image>();
-        //buttonImage.sprite = icons[buttonState];
         initialAspectRatio = rectTransform.localScale.x / rectTransform.localScale.y;
         editButton.onClick.AddListener(ToggleEdit);
     }
@@ -54,7 +54,6 @@ public class Draggable : MonoBehaviour, IDragHandler
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
-        //canvasGroup = GetComponent<CanvasGroup>();
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -94,18 +93,4 @@ public class Draggable : MonoBehaviour, IDragHandler
         buttonImage.sprite = icons[buttonState];
         lockButtonText.text = (buttonState == 0) ? "Unlock" : (buttonState == 1) ? "Resize" : "Lock";
     }
-
-    /*public void OnBeginDrag(PointerEventData eventData)
-    {
-        canvasGroup.alpha = 0.6f;
-        canvasGroup.blocksRaycasts = false;
-    }
-
-  
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
-    }*/
 }

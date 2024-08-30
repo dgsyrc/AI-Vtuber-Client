@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3861934013405954171}
   - component: {fileID: 4490782614010665779}
   - component: {fileID: 5001986802559143434}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: DeleteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}

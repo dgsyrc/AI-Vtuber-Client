@@ -1,5 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+/* Module name: Live2DMotionCtrl
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using Live2D.Cubism.Framework.Motion;
 using System.IO;
@@ -36,7 +38,6 @@ public class Live2DMotionCtrl : MonoBehaviour
         {
             timeFlag = 0;
         }
-        //if (Input.GetMouseButtonDown(0))//鼠标点击
         if(timeFlag == 1 && ani.GetInteger("motion_num") == 0)//时间间隔自动播放
         {
             motion_num += 1;

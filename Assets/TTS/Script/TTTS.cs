@@ -1,5 +1,8 @@
+/* Module name: TTS
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
 using TMPro;

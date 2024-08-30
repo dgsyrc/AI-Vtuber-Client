@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+/* Module name: SettingSave
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class SettingSave : MonoBehaviour
 {
-    // Start is called before the first frame update
     public TMP_InputField WindowWidthInputText;
     public TMP_InputField WindowHeightInputText;
 

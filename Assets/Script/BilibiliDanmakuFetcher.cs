@@ -1,8 +1,11 @@
+/* Module name: BilibiliDanmakuFetcher
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
+using UnityEngine.UI;   
 using Newtonsoft.Json.Linq;
 using System.IO;
 using TMPro;
@@ -27,7 +30,7 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
     private UnityClient.AIInterface aiInterface;
 
     private int lastTs = 0;
-    private string lastAnswer=" ";
+    private string lastAnswer="test info";
     private string nowAnswer;
     private string lastAsk=" ";
     private bool isLLMIdle = true;
@@ -45,7 +48,7 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
         while (true)
         {
             UnityWebRequest request = UnityWebRequest.Get(heartBeatApiUrl);
-            //SetHeartBeatHeaders(request);
+
 
             yield return request.SendWebRequest();
 
@@ -70,7 +73,6 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
             }
             string url = danmakuApiUrl + roomID + "&room_type=0";
             UnityWebRequest request = UnityWebRequest.Get(url);
-            //SetDanmakuHeaders(request);
             Debug.LogError("wait ans");
             yield return request.SendWebRequest();
             Debug.LogError("get ans");
@@ -86,7 +88,7 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
             }
             nowAnswer = aiInterface.GetAnswer();
             Debug.LogError("Ans:" + nowAnswer);
-            Debug.LogError("ifAns:"+(lastAnswer != nowAnswer).ToString());
+            Debug.LogError("ifAns:"+(lastAnswer != nowAnswer).ToString()+" w"+nowAnswer+"w");
             Debug.LogError("askinfo:"+aiInterface.GetChosenText());
             if (lastAnswer!=nowAnswer&&nowAnswer!=null)
             {
@@ -95,17 +97,8 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
                 AnsWithEmoji.text = ConvertPunctuationAndRemoveEmoji(nowAnswer);
                 lastAnswer = nowAnswer;
                 lastAsk = aiInterface.GetChosenText();
-                //isLLMIdle = true;
                 aiInterface.SetIdle();
-                //aiInterface.SetPrompt("null");
             }
-            /*else
-            {
-                if(lastAsk == aiInterface.GetChosenText())
-                {
-                    isLLMIdle=true;
-                }
-            }*/
 
             yield return new WaitForSeconds(UpdateIntervalTime); // 每2秒获取一次弹幕
         }
@@ -116,7 +109,6 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
     {
         JArray danmakuList = (JArray)jsonResponse["data"]["room"];
 
-        //Debug.LogError("Error 1");
         foreach (var danmaku in danmakuList)
         {
             string text = danmaku["text"].ToString();
@@ -140,7 +132,6 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
 
             }
             
-            //Debug.LogError(tsStr);
             int ts = int.Parse(tsStr);
             int badgeLevelInt = int.Parse(badgeLevel);
             int guardLevel = int.Parse(guardLevelStr);
@@ -164,7 +155,6 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
                     Debug.LogError("setaskinfo:" + aiInterface.GetChosenText());
                     aiInterface.SetTsID(ts);
                     Debug.LogError(text);
-                    //lastAnswer = nowAnswer;
                     isLLMIdle = false;
                     
                 }
@@ -209,7 +199,8 @@ public class BilibiliDanmakuFetcher : MonoBehaviour
           .Replace('“', '"')
           .Replace('”', '"')
           .Replace('‘', '\'')
-          .Replace('’', '\'');
+          .Replace('’', '\'')
+          .Replace('+', '加');
 
         // 2. 使用正则表达式删除所有 emoji 符号
         string noEmojiString = RemoveEmoji(sb.ToString());

@@ -1,17 +1,19 @@
+/* Module name: ImageManager
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 using SFB;
-using Unity.VisualScripting;
 using TMPro;
-using UnityEngine.U2D;
 
 public class ImageManager : MonoBehaviour
 {
-    public GameObject imagePrefab; // Drag your Image prefab here
-    public Transform imageContainer; // The Panel where images will be placed
-    public Button addButton; // The button to add new images
+    public GameObject imagePrefab; 
+    public Transform imageContainer;
+    public Button addButton;
     public Image backgroundImage;
     public TMP_Text backgroundImagePathText;
     public RectTransform L2DPanel;
@@ -40,7 +42,6 @@ public class ImageManager : MonoBehaviour
     void AddImage(Sprite loadSprite, string path)
     {
         GameObject newImage = Instantiate(imagePrefab, imageContainer, loadSprite, path);
-        //RectTransform rectTransform = newImage.GetComponent<RectTransform>();
         images.Add(newImage);
     }
 
@@ -76,10 +77,7 @@ public class ImageManager : MonoBehaviour
        
         ImageList tmpImage = new ImageList { images = imageDataList ,backgroundData = nowBackgroundData, askData = askDataTmp, danmakuData=danmakuDataTmp,l2DData=l2DDataTmp};
         ImageConfig tmpConfig = new ImageConfig { imageData = tmpImage };
-        //tmpConfig.backgroundData.path = nowBackgroundData.path;
-        //tmpConfig.backgroundData.mode = nowBackgroundData.mode;
-        //UnityEngine.Debug.LogError("path:" + tmpConfig.backgroundData.path+" mode:" + tmpConfig.backgroundData.mode.ToString());
-        //string json = JsonConvert.SerializeObject(tmpConfig, Formatting.Indented);
+
         string json = JsonUtility.ToJson(tmpConfig);
         File.WriteAllText(UnityEngine.Application.persistentDataPath + "/imageData.json", json);
     }
@@ -126,45 +124,6 @@ public class ImageManager : MonoBehaviour
                 
             }
             
-            /*if (File.Exists(backgroundSetting.path))
-            {
-                byte[] fileData = File.ReadAllBytes(backgroundSetting.path);
-                Texture2D texture = new Texture2D(2, 2);
-                Sprite loadedSprite;
-                texture.LoadImage(fileData);
-                loadedSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                backgroundImage.sprite = loadedSprite;
-                backgroundImage.color = Color.white; // 确保背景色为白色
-                UnityEngine.Debug.LogError("path1:" + backgroundSetting.path);
-                switch (backgroundSetting.mode)
-                {
-                     case 0:
-                         // 设置 Image 组件为平铺模式
-                         backgroundImage.type = Image.Type.Simple;
-                         backgroundImage.preserveAspect = true;
-                         backgroundImage.material = null; // 确保没有材质影响
-                         break;
-
-                     case 1:
-                         // 设置 Image 组件为填充模式  
-                         backgroundImage.type = Image.Type.Simple;
-                         backgroundImage.preserveAspect = false;
-                         backgroundImage.material = new Material(Shader.Find("Unlit/Texture"));
-                         backgroundImage.material.mainTexture = loadedSprite.texture;
-                         backgroundImage.sprite = null; // 确保不使用 Sprite
-                         break;
-                }
-                modeDropdown.value = backgroundSetting.mode;
-                nowBackgroundData = backgroundSetting;
-                backgroundImagePathText.text = backgroundSetting.path;
-                UnityEngine.Debug.LogError("path1:" + backgroundSetting.path);
-            }
-            else
-            {
-                Debug.LogError("File not found: " + path);
-            }
-            Debug.LogError("File show: " + backgroundImagePathText.text);
-            backgroundImagePathText.text = backgroundSetting.path;*/
             L2DPanel.anchoredPosition = l2DDataTmp.position;
             L2DPanel.sizeDelta = l2DDataTmp.size;
             L2DPanel.localScale = l2DDataTmp.scale;
@@ -203,8 +162,6 @@ public class ImageManager : MonoBehaviour
             texture.LoadImage(fileData);
             loadedSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             AddImage(loadedSprite,path);
-            //backgroundImage.sprite = loadedSprite;
-            //backgroundImage.color = Color.white;
         }
         else
         {

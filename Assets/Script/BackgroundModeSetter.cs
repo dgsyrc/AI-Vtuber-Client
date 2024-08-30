@@ -1,3 +1,7 @@
+/* Module name: BackgroundModeSetter
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using UnityEngine.UI;
 

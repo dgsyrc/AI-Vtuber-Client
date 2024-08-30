@@ -1,3 +1,7 @@
+/* Module name: BackgroundImageManager
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro; // 引入 TextMeshPro 的命名空间
@@ -21,7 +25,6 @@ public class BackgroundImageManager : MonoBehaviour
     void Start()
     {
         // 设置下拉菜单的选项
-        //savePath = Path.Combine(Application.persistentDataPath, "BackgroundSettings.json");
         modeDropdown.ClearOptions();
         modeDropdown.AddOptions(new List<string> { "平铺", "填充" });
 
@@ -58,8 +61,6 @@ public class BackgroundImageManager : MonoBehaviour
             backgroundModeSetter.SetBackgroundImage(loadedSprite);
             imageManager.nowBackgroundData.path = path;
             ApplyBackgroundImage();
-            //backgroundImage.sprite = loadedSprite;
-            //backgroundImage.color = Color.white;
         }
         else
         {
@@ -75,37 +76,13 @@ public class BackgroundImageManager : MonoBehaviour
         backgroundModeSetter.ApplyDisplayMode(modeDropdown.value);
     }
 
-    /*void ApplyDisplayMode(BackgroundImageMode mode)
-    {
-        switch (mode)
-        {
-            case BackgroundImageMode.Fill:
-                // 设置 Image 组件为填充模式
-                backgroundImage.type = Image.Type.Simple;
-                backgroundImage.preserveAspect = true;
-                break;
-
-            case BackgroundImageMode.Tile:
-                // 设置 Image 组件为平铺模式
-                backgroundImage.type = Image.Type.Simple;
-                backgroundImage.preserveAspect = false;
-                backgroundImage.material = new Material(Shader.Find("Unlit/Texture"));
-                backgroundImage.material.mainTexture = loadedSprite.texture;
-                backgroundImage.sprite = null; // 确保不使用 Sprite
-                break;
-        }
-    }*/
     public void LoadSettings()
     {
         if (File.Exists(imageManager.nowBackgroundData.path))
         {
-            //string json = File.ReadAllText(imageManager.nowBackgroundData.path);
-            //BackgroundSettings settings = JsonUtility.FromJson<BackgroundSettings>(json);
             filePathText.text = imageManager.nowBackgroundData.path;
             modeDropdown.value = imageManager.nowBackgroundData.mode;
             LoadImage(imageManager.nowBackgroundData.path); // 加载图片
-            //ApplyDisplayMode(settings.mode); // 应用显示模式
-            //ApplyBackgroundImage();
         }
     }
 

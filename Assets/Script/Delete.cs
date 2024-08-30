@@ -1,3 +1,7 @@
+/* Module name: Delete
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -7,6 +11,7 @@ public class Delete : MonoBehaviour, IPointerClickHandler
 {
     public GameObject imageToDelete; // The image that this button will delete
     public Button editButton;
+    public GameObject gameObject;
     private TMP_Text editButtonText;
     private int buttonState = 0;
     private Button button;
@@ -77,13 +82,7 @@ public class Delete : MonoBehaviour, IPointerClickHandler
         if (imageToDelete != null&&button.interactable)
         {
             Destroy(imageToDelete);
-            SaveImageData();
         }
     }
 
-    private void SaveImageData()
-    {
-        // Code to remove the image data from the save file
-        // This will depend on how you store and manage image data
-    }
 }

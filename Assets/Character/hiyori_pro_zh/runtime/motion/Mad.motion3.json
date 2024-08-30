@@ -1,13 +1,13 @@
 {
 	"Version": 3,
 	"Meta": {
-		"Duration": 4.667,
+		"Duration": 4.67,
 		"Fps": 30.0,
 		"Loop": true,
 		"AreBeziersRestricted": true,
-		"CurveCount": 52,
-		"TotalSegmentCount": 541,
-		"TotalPointCount": 1611,
+		"CurveCount": 53,
+		"TotalSegmentCount": 542,
+		"TotalPointCount": 1613,
 		"UserDataCount": 0,
 		"TotalUserDataSize": 0
 	},
@@ -4085,6 +4085,17 @@
 				10.172,
 				4.667,
 				10.172
+			]
+		},
+		{
+			"Target": "PartOpacity",
+			"Id": "PartArmB",
+			"Segments": [
+				0,
+				0,
+				0,
+				4.67,
+				0
 			]
 		}
 	]

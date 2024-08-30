@@ -1,8 +1,11 @@
+/* Module name: UnityClient
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class UnityClient : MonoBehaviour
 {
@@ -33,11 +36,11 @@ public class UnityClient : MonoBehaviour
         StartCoroutine(SendTimedMessage());
     }
 
-    void ConnectToServer()
+    public void ConnectToServer()
     {
         client = new TcpClient(serverIP, serverPort);
         stream = client.GetStream();
-        Debug.Log("成功连接到服务器");
+        Debug.LogError("成功连接到服务器");
     }
 
     void Update()
@@ -47,8 +50,10 @@ public class UnityClient : MonoBehaviour
 
     private IEnumerator SendTimedMessage()
     {
+        yield return new WaitForSeconds(6f);
         while (true)
         {
+            UnityEngine.Debug.LogError("Idle:"+Idle.ToString()+" tsID:"+tsID.ToString());
             if (Idle && tsID != lastTsID)
             {
                 lastTsID = tsID;
@@ -65,13 +70,14 @@ public class UnityClient : MonoBehaviour
         string json = JsonUtility.ToJson(aiInfo);
         byte[] data = Encoding.UTF8.GetBytes(json);
         stream.Write(data, 0, data.Length);
-        
+        UnityEngine.Debug.LogError("Send Message");
     }
 
     void ReceiveMessage()
     {
         if (stream.DataAvailable)
         {
+            UnityEngine.Debug.LogError("Recieve Message");
             byte[] responseData = new byte[4096];
             int bytesRead = stream.Read(responseData, 0, responseData.Length);
             string response = Encoding.UTF8.GetString(responseData, 0, bytesRead);

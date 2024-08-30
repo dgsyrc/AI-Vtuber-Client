@@ -1,3 +1,7 @@
+/* Module name: Live2DAnimatorController
+ * Author: dgsyrc@github.com
+ * Update date: 2024/08/30
+ */
 using UnityEngine;
 using TMPro;
 using System.Collections;
@@ -16,8 +20,6 @@ public class Live2DAnimatorController : MonoBehaviour
         // 开始随机播放动画的协程
         StartCoroutine(PlayRandomAnimations());
 
-        // 为输入框的提交事件添加监听器
-        //inputField.onEndEdit.AddListener(OnEndEdit);
     }
 
     // 播放空闲动画
